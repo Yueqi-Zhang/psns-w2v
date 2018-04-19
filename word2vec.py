@@ -188,25 +188,19 @@ if __name__ == '__main__':
     parser.add_argument('input_ps', type=str)
     parser.add_argument('input_ns', type=str)
     parser.add_argument('output_file_name', type=str)
-    parser.add_argument('preprocessed_pair_dir', type=str)
-    parser.add_argument('input_word2id', type=str)
-    parser.add_argument('input_id2word', type=str)
-    parser.add_argument('input_topfrequent', type=str)
     parser.add_argument('--similarity_test_paths', type=str, default='data/240.txt|data/297.txt')
     parser.add_argument('--synset_paths', type=str, default='data/nsem3-adjusted.txt')
     parser.add_argument('--analogy_test_paths', type=str, default='data/analogy.txt')
+    parser.add_argument('--emb_dimension', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--window_size', type=int, default=5)
+    parser.add_argument('--kn', type=int, default=20)
     parser.add_argument('--iteration', type=int, default=1)
     parser.add_argument('--min_count', type=int, default=30)
     parser.add_argument('--initial_lr', type=float, default=0.01)
-    parser.add_argument('--p', type=float, default=0.0)
-    parser.add_argument('--sigma', type=float, default=1e-9)
     parser.add_argument('--clip', type=float, default=1.0)
-    parser.add_argument('--batch_num_to_show_progress', type=int, default=10000)
     parser.add_argument('--batch_num_to_valid', type=int, default=100000)
     parser.add_argument('--log_path', type=str, default='train.log')
-    parser.add_argument('--sample_rate', type=float, default=1)
     args, _ = parser.parse_known_args()
     if args.similarity_test_paths == 'None':
         args.similarity_test_paths = None
@@ -218,10 +212,7 @@ if __name__ == '__main__':
     logging_set(args.log_path)
     #w2v = Word2Vec(input_file_name=sys.argv[1], input_wvectors = sys.argv[2], input_cvectors = sys.argv[3], output_file_name=sys.argv[4])
     w2v = Word2Vec(input_file_name=args.input_file_name, input_wvectors=args.input_wvectors, input_cvectors = args.input_cvectors,
-        output_file_name=args.output_file_name, preprocessed_pair_dir=args.preprocessed_pair_dir, input_word2id=args.input_word2id,
-        input_id2word=args.input_id2word, input_topfrequent=args.input_topfrequent,
-        batch_size=args.batch_size, window_size=args.window_size, iteration=args.iteration, min_count=args.min_count,
-        initial_lr=args.initial_lr, p=args.p, sigma=args.sigma, clip=args.clip, batch_num_to_show_progress=args.batch_num_to_show_progress,
-        batch_num_to_valid=args.batch_num_to_valid)
-    w2v.train(similarity_test_paths=args.similarity_test_paths, synset_paths=args.synset_paths, analogy_paths=args.analogy_test_paths,
-        sample_rate=args.sample_rate)
+        input_ps = args.input_ps, input_ns = args.input_ns, output_file_name=args.output_file_name, emb_dimension = args.emb_dimension,
+        batch_size=args.batch_size, window_size=args.window_size, kn = args.kn, teration=args.iteration, min_count=args.min_count,
+        initial_lr=args.initial_lr, clip=args.clip, batch_num_to_valid=args.batch_num_to_valid)
+    w2v.train(similarity_test_paths=args.similarity_test_paths, synset_paths=args.synset_paths, analogy_paths=args.analogy_test_paths)
