@@ -21,8 +21,6 @@ import tempfile
 import random
 import string
 import shutil
-
-from utils import get_preprocessed_pairs
 import debugger
 from evaluation import evaluation
 from input_data import InputData
@@ -174,6 +172,29 @@ class Word2Vec:
                 shutil.move(tmp_emb_path, emb_save_path)
                 logging.info('Save current embedding to %s' % emb_save_path)
 
+    def save_embedding(self, id2word, file_name, use_cuda):
+        """Save all embeddings to file.
+
+        As this class only record word id, so the map from id to word has to be transfered from outside.
+
+        Args:
+            id2word: map from word id to word.
+            file_name: file name.
+        Returns:
+            None.
+        """
+        if use_cuda:
+            embedding = self.skip_gram_model.module.u_embeddings.weight.cpu().data.numpy()
+        else:
+            embedding = self.skip_gram_model.module.u_embeddings.weight.data.numpy()
+        fout = open(file_name, 'w')
+        fout.write('%d %d\n' % (len(id2word), self.emb_dimension))
+        for wid, w in id2word.items():
+            e = embedding[wid]
+            e = ' '.join(map(lambda x: str(x), e))
+            fout.write('%s %s\n' % (w, e))
+
+
 
 if __name__ == '__main__':
     #w2v = Word2Vec(input_file_name=sys.argv[1], input_wvectors=sys.argv[2], input_cvectors=sys.argv[3], input_ps=sys.argv[4], input_ns=sys.argv[5], output_file_name=sys.argv[6])
@@ -213,6 +234,6 @@ if __name__ == '__main__':
     #w2v = Word2Vec(input_file_name=sys.argv[1], input_wvectors = sys.argv[2], input_cvectors = sys.argv[3], output_file_name=sys.argv[4])
     w2v = Word2Vec(input_file_name=args.input_file_name, input_wvectors=args.input_wvectors, input_cvectors = args.input_cvectors,
         input_ps = args.input_ps, input_ns = args.input_ns, output_file_name=args.output_file_name, emb_dimension = args.emb_dimension,
-        batch_size=args.batch_size, window_size=args.window_size, kn = args.kn, teration=args.iteration, min_count=args.min_count,
+        batch_size=args.batch_size, window_size=args.window_size, kn = args.kn, iteration=args.iteration, min_count=args.min_count,
         initial_lr=args.initial_lr, clip=args.clip, batch_num_to_valid=args.batch_num_to_valid)
     w2v.train(similarity_test_paths=args.similarity_test_paths, synset_paths=args.synset_paths, analogy_paths=args.analogy_test_paths)
