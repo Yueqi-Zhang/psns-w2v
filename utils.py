@@ -1,4 +1,5 @@
 import pickle as pkl
+import logging
 
 def load_from_pkl(pkl_path):
     with open(pkl_path, 'rb') as fin:

@@ -76,29 +76,6 @@ class SkipGramModel(nn.Module):
 
         return -1 * (torch.sum(score)+torch.sum(neg_score)+torch.sum(pos_score))
 
-    def save_embedding(self, id2word, file_name, use_cuda):
-        """Save all embeddings to file.
-
-        As this class only record word id, so the map from id to word has to be transfered from outside.
-
-        Args:
-            id2word: map from word id to word.
-            file_name: file name.
-        Returns:
-            None.
-        """
-        if use_cuda:
-            embedding = self.u_embeddings.weight.cpu().data.numpy()
-        else:
-            embedding = self.u_embeddings.weight.data.numpy()
-        fout = open(file_name, 'w')
-        fout.write('%d %d\n' % (len(id2word), self.emb_dimension))
-        for wid, w in id2word.items():
-            e = embedding[wid]
-            e = ' '.join(map(lambda x: str(x), e))
-            fout.write('%s %s\n' % (w, e))
-
-
 def test():
     model = SkipGramModel(100, 100)
     id2word = dict()
