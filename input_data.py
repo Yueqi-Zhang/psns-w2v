@@ -87,7 +87,8 @@ class InputData:
         batch_pairs = []
         for _ in range(batch_size):
             batch_pairs.append(self.word_pair_catch.popleft())
-        return numpy.random.shuffle(batch_pairs)
+        numpy.random.shuffle(batch_pairs)
+        return batch_pairs
 
     # @profile
     def get_neg_v_neg_sampling(self, pos_word_pair, count):

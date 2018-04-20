@@ -152,7 +152,7 @@ class Word2Vec:
 
                 if i % self.batch_num_to_valid == 0:
                     logging.info('epoch%d_batch%d, evaluating...' % (epoch, i))
-                    self.save_embedding(self.id2word, tmp_emb_path, self.use_cuda)
+                    self.save_embedding(self.data.id2word, tmp_emb_path, self.use_cuda)
 
                     best_scores, save_flag = evaluation(tmp_emb_path, similarity_test_paths, synset_paths, analogy_paths,
                                                         best_scores)
@@ -165,7 +165,7 @@ class Word2Vec:
             self.skip_gram_model.save_embedding(
                 self.data.id2word, self.output_file_name, self.use_cuda)
             logging.info('final evaluating...')
-            self.save_embedding(self.id2word, tmp_emb_path, self.use_cuda)
+            self.save_embedding(self.data.id2word, tmp_emb_path, self.use_cuda)
             best_scores, save_flag = evaluation(tmp_emb_path, similarity_test_paths, synset_paths, analogy_paths, best_scores)
             if save_flag == True:
                 emb_save_path = self.output_file_name + "_epoch%d" % epoch
@@ -184,9 +184,9 @@ class Word2Vec:
             None.
         """
         if use_cuda:
-            embedding = self.skip_gram_model.module.u_embeddings.weight.cpu().data.numpy()
+            embedding = self.skip_gram_model.u_embeddings.weight.cpu().data.numpy()
         else:
-            embedding = self.skip_gram_model.module.u_embeddings.weight.data.numpy()
+            embedding = self.skip_gram_model.u_embeddings.weight.data.numpy()
         fout = open(file_name, 'w')
         fout.write('%d %d\n' % (len(id2word), self.emb_dimension))
         for wid, w in id2word.items():
