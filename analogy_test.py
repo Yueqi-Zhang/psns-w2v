@@ -3,7 +3,10 @@ from utils import logging_set
 from gensim.models import Word2Vec
 import argparse
 import gensim
-#from glove import Glove, metrics  # download from https://github.com/maciejkula/glove-python.git, python setup.py install
+
+import platform
+if platform.system() != "Darwin":
+    from glove import Glove, metrics  # download from https://github.com/maciejkula/glove-python.git, python setup.py install
 from collections import defaultdict
 import numpy as np
 import debugger
@@ -79,6 +82,9 @@ def analogy_test_by_glove(model, analogies_file_path, to_encode, no_threads=1):
     section_ranks = []
     for section, words in sections.items():
         evaluation_ids = metrics.construct_analogy_test_set(words, model.dictionary, ignore_missing=True)   # model.dictionary: dict word2id
+
+        if len(evaluation_ids) == 0:
+            raise Exception("本训练语料词库与analogy test文件%s的词汇交集为0，无法进行本项测试。请在运行时添加选项--analogy_test_paths=None跳过此测试")
 
         # Get the rank array.
         ranks = metrics.analogy_rank_score(evaluation_ids, model.word_vectors, no_threads=no_threads)       #model.word_vectors: 2d np array emb matrix

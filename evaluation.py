@@ -7,8 +7,10 @@ import logging
 import argparse
 import gensim
 import os
+import platform
 
-#from glove import Glove, metrics
+if platform.system() != "Darwin":
+    from glove import Glove, metrics
 
 from sim_test1 import read_vectors, calc_sim
 from sim_test2 import read_synset, synset_test

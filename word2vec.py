@@ -11,6 +11,7 @@ from utils import load_from_pkl, convert_word_to_id
 import sys
 import random
 import string
+import platform
 
 import sys
 import argparse
@@ -229,6 +230,10 @@ if __name__ == '__main__':
         args.synset_paths = None
     if args.analogy_test_paths == 'None':
         args.analogy_test_paths = None
+
+    #如果是mac系统，就不做analogy test
+    if platform.system() == "Darwin":
+        args.analogy_test_paths=None
 
     logging_set(args.log_path)
     #w2v = Word2Vec(input_file_name=sys.argv[1], input_wvectors = sys.argv[2], input_cvectors = sys.argv[3], output_file_name=sys.argv[4])
